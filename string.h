@@ -55,10 +55,13 @@ public:
 	bool operator<(const String&);
 	bool operator>=(const String&);
 	bool operator<=(const String&);
+	friend std::ostream& operator<<(std::ostream&, const String&);
+	friend std::istream& operator>>(std::istream&, String&);
 private:
 	std::size_t m_size;
     std::size_t m_capacity;
     char* m_buf;
+	/*
 public:	
 	friend std::ostream& operator<<(std::ostream& os, const String& ptr)
 	{
@@ -96,5 +99,6 @@ public:
 		ptr[ptr.m_size] = '\0';
 		return in;
 	}
+	*/
 };
 #endif // STRING_H

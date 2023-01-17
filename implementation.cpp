@@ -621,6 +621,44 @@ bool String::operator<=(const String& rhs)
 	return true;
 }
 
+std::ostream& operator<<(std::ostream& os, const String& ptr)
+{
+	int i = 0;
+	if (!ptr.length())
+	{
+		os<< "";
+		return os;
+	}
+	while (ptr[i])
+	{
+		os << ptr[i++];
+	}
+	return os;
+}
+
+std::istream& operator>>(std::istream& in, String& ptr)
+{
+	if (!ptr.empty())
+	{
+		delete[] ptr.m_buf;
+		ptr.m_buf = nullptr;
+		ptr.m_size = 0;
+		ptr.m_capacity = 0;
+	}
+	std::string str = "";
+	in >> str;
+	ptr.foo(str.size() + 1);
+	int count = 0;
+	int i = 0;
+	for (int i = 0; i < ptr.m_capacity; ++i)
+	{
+		ptr[ptr.m_size++] = str[i];
+	}
+	ptr[ptr.m_size] = '\0';
+	return in;
+}
+
+
 void String::print()
 {
     int i = 0;
