@@ -16,6 +16,265 @@ String::~String()
 	m_buf = nullptr;
 }
 
+String::String(char* buf)
+{
+	m_size = strlen(buf);
+	delete[] m_buf;
+	m_buf = new char[m_size + 1];
+	this->m_buf = buf;
+}
+
+String::String(std::size_t size, std::size_t capacity)
+{
+	this->m_size = size;
+	this->m_capacity = capacity;
+}
+
+String::String(const String& other) 
+{ 
+	this->m_size = other.m_size;	
+	this->m_capacity = other.m_capacity; 
+	delete[] m_buf;
+	this->m_buf = new char[this->m_capacity];
+	for (int i = 0; i < m_size; ++i)
+	{
+		this->m_buf[i] = other.m_buf[i];
+	}
+}
+
+String::String(String&& other)
+{
+	this->m_size = other.m_size;	
+	this->m_capacity = other.m_capacity; 
+	this->m_buf = other.m_buf;
+	other.m_size = 0;
+	other.m_capacity = 0;
+	other.m_buf = nullptr;
+}
+
+String& String::operator=(const String& rhs)
+{
+	if (this == &rhs)
+	{
+		return *this;
+	}
+	delete[] m_buf;
+	m_size = rhs.m_size;
+	m_capacity = rhs.m_capacity;
+	m_buf = new char[m_capacity];
+	for (int i = 0; i < m_size; ++i)
+	{
+		m_buf[i] = rhs.m_buf[i];
+	}
+	return *this;
+}
+
+String& String::operator=(String&& rhs)
+{
+	if (this == &rhs)
+	{
+		return *this;
+	}
+	m_size = rhs.m_size;
+	m_capacity = rhs.m_capacity;
+	m_buf = rhs.m_buf; 
+	rhs.m_size = 0;
+	rhs.m_capacity = 0;
+	rhs.m_buf = nullptr;
+	return *this;
+}
+
+String String::operator+(const String& rhs)
+{
+	String tmp;
+	tmp.m_size = m_size + rhs.m_size;
+	tmp.m_capacity = m_capacity + rhs.m_capacity;
+	int i = 0;
+	int j = 0;
+	for (i = 0; this->m_buf[i] != '\0'; ++i){}
+	for (j = 0; rhs.m_buf[j] != '\0'; ++j)
+	{
+		this->m_buf[i++] = rhs.m_buf[j];
+	}
+	this->m_buf[i] = '\0';
+	for (int i = 0; this->m_buf[i] != '\0'; ++i)
+	{
+		tmp.m_buf[i] = this->m_buf[i];
+	}
+	tmp.m_buf[i] = '\0';
+	return tmp;	
+}
+
+String& String::operator+=(const String& str)
+{
+	if (this == &str)
+	{
+		return *this;
+	}
+	this->m_size += str.m_size;
+	this->m_capacity += str.m_capacity;
+	int i = 0;
+	int j = 0;
+	for (i = 0; this->m_buf[i] != '\0'; ++i){}
+	for (j = 0;	str.m_buf[j] != '\0'; ++j, ++i)
+	{
+		this->m_buf[i] = str.m_buf[j];
+	}
+	this->m_buf[i] = '\0';
+	return *this;
+}
+
+const char& String::operator[](int index) const
+{
+	if (index >= m_size && index < 0)
+	{
+		std::cout << "There isn't this index in this string";
+	}
+	return m_buf[index];
+}
+
+char& String::operator[](int index)
+{
+	if (index >= m_size && index < 0)
+	{
+		std::cout << "There isn't this index in this string";
+	}
+	return m_buf[index];
+}
+
+bool String::operator==(String& rhs)
+{
+	if (m_size != rhs.m_size)
+	{
+		return false;
+	}
+	for (int i = 0; i < m_size; ++i)
+	{
+		if (m_buf[i] != rhs.m_buf[i])
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+bool String::operator!=(String& rhs)
+{
+	if (m_size != rhs.m_size)
+	{
+		return true;
+	}
+	for (int i = 0; i < m_size; ++i)
+	{
+		if (m_buf[i] != rhs.m_buf[i])
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool String::operator>(const String& rhs)
+{
+	if (m_size > rhs.m_size)
+	{
+		return true;
+	}
+	for (int i = 0; i < m_size; ++i)
+	{
+		if (m_buf[i] > rhs.m_buf[i])
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool String::operator<(const String& rhs)
+{
+	if (m_size < rhs.m_size)
+	{
+		return true;
+	}
+	for (int i = 0; i < m_size; ++i)
+	{
+		if (m_buf[i] < rhs.m_buf[i])
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool String::operator>=(const String& rhs)
+{
+	if (m_size < rhs.m_size)
+	{
+		return false;
+	}
+	for (int i = 0; i < m_size; ++i)
+	{
+		if (m_buf[i] < rhs.m_buf[i])
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+bool String::operator<=(const String& rhs)
+{
+	if (m_size > rhs.m_size)
+	{
+		return false;
+	}
+	for (int i = 0; i < m_size; ++i)
+	{
+		if (m_buf[i] > rhs.m_buf[i])
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+std::ostream& operator<<(std::ostream& os, const String& ptr)
+{
+	int i = 0;
+	if (!ptr.length())
+	{
+		os<< "";
+		return os;
+	}
+	while (ptr[i])
+	{
+		os << ptr[i++];
+	}
+	return os;
+}
+
+std::istream& operator>>(std::istream& in, String& ptr)
+{
+	if (!ptr.empty())
+	{
+		delete[] ptr.m_buf;
+		ptr.m_buf = nullptr;
+		ptr.m_size = 0;
+		ptr.m_capacity = 0;
+	}
+	std::string str = "";
+	in >> str;
+	ptr.foo(str.size() + 1);
+	int count = 0;
+	int i = 0;
+	for (int i = 0; i < ptr.m_capacity; ++i)
+	{
+		ptr[ptr.m_size++] = str[i];
+	}
+	ptr[ptr.m_size] = '\0';
+	return in;
+}
+
 void String::set_size(std::size_t size)
 {
 	this->m_size = size;
@@ -398,266 +657,6 @@ void String::foo(int size)
 	m_buf = ptr1;
 	ptr1 = nullptr;
 }
-
-String::String(char* buf)
-{
-	m_size = strlen(buf);
-	delete[] m_buf;
-	m_buf = new char[m_size + 1];
-	this->m_buf = buf;
-}
-
-String::String(std::size_t size, std::size_t capacity)
-{
-	this->m_size = size;
-	this->m_capacity = capacity;
-}
-
-String::String(const String& other) 
-{ 
-	this->m_size = other.m_size;	
-	this->m_capacity = other.m_capacity; 
-	delete[] m_buf;
-	this->m_buf = new char[this->m_capacity];
-	for (int i = 0; i < m_size; ++i)
-	{
-		this->m_buf[i] = other.m_buf[i];
-	}
-}
-
-String::String(String&& other)
-{
-	this->m_size = other.m_size;	
-	this->m_capacity = other.m_capacity; 
-	this->m_buf = other.m_buf;
-	other.m_size = 0;
-	other.m_capacity = 0;
-	other.m_buf = nullptr;
-}
-
-String& String::operator=(const String& rhs)
-{
-	if (this == &rhs)
-	{
-		return *this;
-	}
-	delete[] m_buf;
-	m_size = rhs.m_size;
-	m_capacity = rhs.m_capacity;
-	m_buf = new char[m_capacity];
-	for (int i = 0; i < m_size; ++i)
-	{
-		m_buf[i] = rhs.m_buf[i];
-	}
-	return *this;
-}
-
-String& String::operator=(String&& rhs)
-{
-	if (this == &rhs)
-	{
-		return *this;
-	}
-	m_size = rhs.m_size;
-	m_capacity = rhs.m_capacity;
-	m_buf = rhs.m_buf; 
-	rhs.m_size = 0;
-	rhs.m_capacity = 0;
-	rhs.m_buf = nullptr;
-	return *this;
-}
-
-String String::operator+(const String& rhs)
-{
-	String tmp;
-	tmp.m_size = m_size + rhs.m_size;
-	tmp.m_capacity = m_capacity + rhs.m_capacity;
-	int i = 0;
-	int j = 0;
-	for (i = 0; this->m_buf[i] != '\0'; ++i){}
-	for (j = 0; rhs.m_buf[j] != '\0'; ++j)
-	{
-		this->m_buf[i++] = rhs.m_buf[j];
-	}
-	this->m_buf[i] = '\0';
-	for (int i = 0; this->m_buf[i] != '\0'; ++i)
-	{
-		tmp.m_buf[i] = this->m_buf[i];
-	}
-	tmp.m_buf[i] = '\0';
-	return tmp;	
-}
-
-String& String::operator+=(const String& str)
-{
-	if (this == &str)
-	{
-		return *this;
-	}
-	this->m_size += str.m_size;
-	this->m_capacity += str.m_capacity;
-	int i = 0;
-	int j = 0;
-	for (i = 0; this->m_buf[i] != '\0'; ++i){}
-	for (j = 0;	str.m_buf[j] != '\0'; ++j, ++i)
-	{
-		this->m_buf[i] = str.m_buf[j];
-	}
-	this->m_buf[i] = '\0';
-	return *this;
-}
-
-const char& String::operator[](int index) const
-{
-	if (index >= m_size && index < 0)
-	{
-		std::cout << "There isn't this index in this string";
-	}
-	return m_buf[index];
-}
-
-char& String::operator[](int index)
-{
-	if (index >= m_size && index < 0)
-	{
-		std::cout << "There isn't this index in this string";
-	}
-	return m_buf[index];
-}
-
-bool String::operator==(String& rhs)
-{
-	if (m_size != rhs.m_size)
-	{
-		return false;
-	}
-	for (int i = 0; i < m_size; ++i)
-	{
-		if (m_buf[i] != rhs.m_buf[i])
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
-bool String::operator!=(String& rhs)
-{
-	if (m_size != rhs.m_size)
-	{
-		return true;
-	}
-	for (int i = 0; i < m_size; ++i)
-	{
-		if (m_buf[i] != rhs.m_buf[i])
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-bool String::operator>(const String& rhs)
-{
-	if (m_size > rhs.m_size)
-	{
-		return true;
-	}
-	for (int i = 0; i < m_size; ++i)
-	{
-		if (m_buf[i] > rhs.m_buf[i])
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-bool String::operator<(const String& rhs)
-{
-	if (m_size < rhs.m_size)
-	{
-		return true;
-	}
-	for (int i = 0; i < m_size; ++i)
-	{
-		if (m_buf[i] < rhs.m_buf[i])
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-bool String::operator>=(const String& rhs)
-{
-	if (m_size < rhs.m_size)
-	{
-		return false;
-	}
-	for (int i = 0; i < m_size; ++i)
-	{
-		if (m_buf[i] < rhs.m_buf[i])
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
-bool String::operator<=(const String& rhs)
-{
-	if (m_size > rhs.m_size)
-	{
-		return false;
-	}
-	for (int i = 0; i < m_size; ++i)
-	{
-		if (m_buf[i] > rhs.m_buf[i])
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
-std::ostream& operator<<(std::ostream& os, const String& ptr)
-{
-	int i = 0;
-	if (!ptr.length())
-	{
-		os<< "";
-		return os;
-	}
-	while (ptr[i])
-	{
-		os << ptr[i++];
-	}
-	return os;
-}
-
-std::istream& operator>>(std::istream& in, String& ptr)
-{
-	if (!ptr.empty())
-	{
-		delete[] ptr.m_buf;
-		ptr.m_buf = nullptr;
-		ptr.m_size = 0;
-		ptr.m_capacity = 0;
-	}
-	std::string str = "";
-	in >> str;
-	ptr.foo(str.size() + 1);
-	int count = 0;
-	int i = 0;
-	for (int i = 0; i < ptr.m_capacity; ++i)
-	{
-		ptr[ptr.m_size++] = str[i];
-	}
-	ptr[ptr.m_size] = '\0';
-	return in;
-}
-
 
 void String::print()
 {
