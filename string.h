@@ -58,7 +58,7 @@ public:
 	void print();
 private:
 	std::size_t m_size;
-    std::size_t m_capacity;
-    char* m_buf;
+	std::size_t m_capacity;
+        char* m_buf;
 };	
 #endif // STRING_H
