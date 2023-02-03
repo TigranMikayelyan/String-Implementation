@@ -358,7 +358,7 @@ void String::erase(int index)
 void String::push_back(char ch)
 {
     if (!m_buf) 
-	{
+    {
         m_capacity = 2;
         m_size = 1;
       	m_buf = new char[m_capacity];
