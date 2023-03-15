@@ -128,7 +128,7 @@ const char& String::operator[](int index) const
 {
 	if (index >= m_size && index < 0)
 	{
-		std::cout << "There isn't this index in this string";
+		throw std::cout << "There isn't this index in this string";
 	}
 	return m_buf[index];
 }
@@ -137,7 +137,7 @@ char& String::operator[](int index)
 {
 	if (index >= m_size && index < 0)
 	{
-		std::cout << "There isn't this index in this string";
+		throw std::cout << "There isn't this index in this string";
 	}
 	return m_buf[index];
 }
@@ -311,31 +311,31 @@ void String::insert(int index, const char* str)
 {
     int size_1 = length(str);
     if ((m_size + size_1 + 1) >= m_capacity) 
-	{
+    {
         realoc((size_1 + 1));
     }
     if (empty() && index == 0) 
-	{
+    {
         op_assign(str);
     } 
-	else if (!empty() && (index == m_size)) 
+    else if (!empty() && (index == m_size)) 
+    {
+	for (int i = 0; i < size_1; ++i) 
 	{
-        for (int i = 0; i < size_1; ++i) 
-		{
             m_buf[m_size++] = str[i];
         }
         m_buf[m_size] = '\0';
     } 
-	else if (index < m_size && index > 0) 
+    else if (index < m_size && index > 0) 
+    {
+       int j = m_size + size_1;
+       for (int i = m_size; i >= index; --i) 
+       {
+           m_buf[j--] = m_buf[i];
+       }
+       j = 0;
+       for (int i = index; i < index + size_1; ++i) 
 	{
-        int j = m_size + size_1;
-        for (int i = m_size; i >= index; --i) 
-		{
-            m_buf[j--] = m_buf[i];
-        }
-        j = 0;
-        for (int i = index; i < index + size_1; ++i) 
-		{
             m_buf[i] = str[j++];
         }
     }
@@ -365,14 +365,14 @@ void String::push_back(char ch)
         m_buf[0] = ch;
         m_buf[1] = '\0';
     } 
-	else 
-	{
-		if ((m_size + 1) >= m_capacity) 
-		{
-			realoc(m_size);
-		}
-		m_buf[m_size++] = ch;
-		m_buf[m_size] = '\0';
+    else 
+    {
+         if ((m_size + 1) >= m_capacity) 
+	 {
+	     realoc(m_size);
+	 }
+	 m_buf[m_size++] = ch;
+	 m_buf[m_size] = '\0';
 	}
 }
 
@@ -475,10 +475,10 @@ int String::length(const char* str)
 {
     int i = 0;
     int count = 0;
-	for (int i = 0; str[i] != '\0'; ++i)
-	{
-		++count;
-	}
+    for (int i = 0; str[i] != '\0'; ++i)
+    {
+ 	++count;
+    }
     return count;
 }
 
